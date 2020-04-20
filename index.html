@@ -16,10 +16,11 @@
 
 
             <div class="product-info">
+                <img v-bind:src="image" />
                 <h1>{{ product }}</h1>
                 <p v-if="inStock">in Stock</p>
                 <p v-else>Out of Stock</p>
-                <img v-bind:src="image" />
+                
                 <span v-show="onSale">On Sale!</span>
                 <ul>
                     <li v-for="detail in details">{{ detail }}</li>
@@ -28,6 +29,9 @@
                 <p>{{ variant.variantColor}}</p></div>
 
             </div>
+            <div class="cart">
+                <p>Cart({{ cart }})</p></div>
+                <button v-on:click="addToCart">Add to cart</button>
 
 
 
@@ -42,9 +46,7 @@
             data: {
                 image: "./img/beats-black.jpg",
                 product: 'Earphone',
-
                 altText: 'beats solo 3 Black',
-
                 inStock: true,
                 onSale: true,
                 details: [
@@ -58,10 +60,19 @@
                         variantId: 2235,
                         variantColor: "blue"
                     }
-                ]
+                ],
+                cart: 0,
+                
+                
 
-
+            },
+            methods:{
+                addToCart(){
+                    this.cart +=1
+                }
+                
             }
+            
         })
 
     </script>
