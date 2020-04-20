@@ -5,13 +5,26 @@
     <meta charset="utf-8">
     <title>Intro in Vue</title>
     <script src="main.js"></script>
+    <link rel="stylesheet" type="text/css" href="style.css">
+
     <script src="https://unpkg.com/vue/dist/vue.js"></script>
 </head>
 
 <body>
     <div id="app">
-        <h>{{ message.product }}</h>
-        <p>{{ message.description }}</p>
+        <div class="product">
+            <div class="product-img">
+               <img v-bind:src="image" v-bind:alt="altText"/>
+            </div>
+
+            <div class="product-info">
+                
+                <h1>{{ product }}</h1>
+                <p>{{ description }}</p>
+            </div>
+
+
+        </div>
     </div>
 
 
@@ -19,14 +32,12 @@
     <script>
         var app = new Vue({
             el: '#app',
-            data: { message:[
-                {product: 'Socks'},
-            {description:'A pair of warm, fuzzy socks'}
-                ]
+            data: {
+                image: "./img/beats-black.jpg",
+                product: 'Earphone',
+                altText: 'beats solo 3 Black'
+
             }
         })
-
     </script>
-</body>
-
-</html>
+</body></html>
