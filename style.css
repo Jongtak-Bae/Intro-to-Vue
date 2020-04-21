@@ -24,3 +24,6 @@ button{
 .disabledButton{
     background-color: gray;
 }
+.outOfStock{
+    text-decoration: line-through;
+}
