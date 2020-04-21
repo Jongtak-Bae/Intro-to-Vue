@@ -12,7 +12,16 @@
 
 <body>
     <div id="app">
-        <div class="product">
+        <product></product>
+    
+    </div>
+
+
+
+    <script>
+        Vue.component('product',{
+            template:`
+              <div class="product">
 
 
             <div class="product-info">
@@ -41,19 +50,13 @@
                         :disabled="!inStock"
                         :class="{ disabledButton: !inStock}">Add to cart</button>
                 <button v-on:click="removeFromCart">Delate</button>
-
-
+            
 
         </div>
-    </div>
-
-
-
-    <script>
-        var app = new Vue({
-            el: '#app',
-            data: {
-                brand:"Vue Mastery",
+                `,
+            data(){
+                return{
+                        brand:"Vue Mastery",
                 product: 'Earphone',
                
                 altText: 'beats solo 3 Black',
@@ -79,11 +82,10 @@
                 ],
                 cart: 0,
                 
-                
-
+                }
             },
             methods:{
-                addToCart(){
+                   addToCart(){
                     this.cart +=1
                 },
                 removeFromCart(){
@@ -95,10 +97,9 @@
                 }
                 
                 
-                
             },
             computed:{
-                title(){
+                 title(){
                     return this.brand +' '+ this.product 
                 },
                 image(){
@@ -109,6 +110,12 @@
                 }
             }
             
+        })
+        var app = new Vue({
+            el: '#app',
+       
+         
+                      
         })
 
     </script>
