@@ -25,13 +25,21 @@
                 <ul>
                     <li v-for="detail in details">{{ detail }}</li>
                 </ul>
-                <div v-for="variant in variants">
-                <p>{{ variant.variantColor}}</p></div>
+                <div class="color-box"
+                     v-for="variant in variants"
+                     :key="variant.cariantId"
+                     :style="{ backgroundColor:variant.variantColor}"
+                     @mouseover="updateProduct(variant.variantImage)"
+                     >
+                </div><!-- bind style to data-->
 
             </div>
             <div class="cart">
                 <p>Cart({{ cart }})</p></div>
-                <button v-on:click="addToCart">Add to cart</button>
+                <button v-on:click="addToCart"
+                        :disabled="!inStock"
+                        :class="{ disabledButton: !inStock}">Add to cart</button>
+                <button v-on:click="removeFromCart">Delate</button>
 
 
 
@@ -54,11 +62,14 @@
                 ],
                 variants: [{
                         variantId: 2234,
-                        variantColor: "green"
+                        variantColor: "black",
+                        variantImage:"./img/beats-black.jpg"
                     },
                     {
                         variantId: 2235,
-                        variantColor: "blue"
+                        variantColor: "red",
+                        variantImage: "./img/beats-red.jpeg"
+                        
                     }
                 ],
                 cart: 0,
@@ -69,7 +80,15 @@
             methods:{
                 addToCart(){
                     this.cart +=1
+                },
+                removeFromCart(){
+                    this.cart -=1
+                },
+                updateProduct(variantImage){
+                    this.image=variantImage
                 }
+                
+                
                 
             }
             
