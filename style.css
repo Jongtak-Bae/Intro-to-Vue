@@ -1,6 +1,7 @@
 body {
     font-family: sans-serif;
     background-color: aliceblue;
+    font-size:16px;
 }
 h{
     font-size: 24px;
@@ -26,4 +27,12 @@ button{
 }
 .outOfStock{
     text-decoration: line-through;
+}
+.cart{
+    width:100px;
+    height: 40px;
+    background-color:#ccc;
+  
+    text-align: center;
+    line-height: 40px;
 }

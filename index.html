@@ -12,113 +12,257 @@
 
 <body>
     <div id="app">
-        <product></product>
-    
+        <product :premium="premium" @add-to-cart="updateCart" @remove-from-cart="removeCart"></product>
+        <div class="cart">
+            <p>Cart({{ cart.length }})</p>
+        </div>
+
     </div>
+
+    <!--template cache-->
+
+
+
 
 
 
     <script>
-        Vue.component('product',{
-            template:`
+        Vue.component('product-details', {
+            props: {
+                details: {
+                    type: Array,
+                    required: true
+                }
+            },
+            template: `
+                <ul>
+    <li v-for="detail in details">{{detail}}
+    </li>
+</ul>    
+            `
+        })
+        Vue.component('product', {
+            props: {
+                premium: {
+                    type: Boolean,
+                    required: true
+                }
+            },
+            template: `
               <div class="product">
 
 
-            <div class="product-info">
-                <img v-bind:src="image" />
-                <h1>{{ title }}</h1>
-                <p v-if="inStock">in Stock</p>
-                <p v-else :class="{outOfStock: !inStock }">Out of Stock</p>
+                    <div class="product-info">
+                        <img v-bind:src="image" />
+                        <h1>{{ title }}</h1>
+                        <p v-if="inStock">in Stock</p>
+                        <p v-else :class="{outOfStock: !inStock }">Out of Stock</p>
+
+                        <span v-show="onSale">On Sale!</span>
+                        <product-details :details ="details"></product-details>
+                        <div class="color-box"
+                             v-for="(variant, index) in variants"
+                             :key="variant.cariantId"
+                             :style="{ backgroundColor:variant.variantColor}"
+                             @mouseover="updateProduct(index)"
+                             >
+                        </div><!-- bind style to data-->
+
+                    </div>
                 
-                <span v-show="onSale">On Sale!</span>
-                <ul>
-                    <li v-for="detail in details">{{ detail }}</li>
-                </ul>
-                <div class="color-box"
-                     v-for="(variant, index) in variants"
-                     :key="variant.cariantId"
-                     :style="{ backgroundColor:variant.variantColor}"
-                     @mouseover="updateProduct(index)"
-                     >
+                    <button v-on:click="addToCart"
+                            :disabled="!inStock"
+                            :class="{ disabledButton: !inStock}">Add to cart</button>
+                    <button v-on:click="removeFromCart">Delete</button>
+                    
+                    <p>Shipping:{{shipping}}</p>
+                    <!--review -->
+                     <product-review @review-submitted="addReview"></product-review>
+                      <div>
+                            <h2>Reviews</h2>
+                            <p v-if="!reviews.length">There are no reviews yet.</p>
+                            <ul>
+                                <li v-for="review in reviews">
+                                    <p>{{ review.name}}</p>
+                                    <p>Rating:{{review.rating}}</p>
+                                    <p>{{review.review}}</p>
+
+                                </li>
+
+                            </ul>
+
+                        </div>
+
+                 
+                   
                   
-                </div><!-- bind style to data-->
-
-            </div>
-            <div class="cart">
-                <p>Cart({{ cart }})</p></div>
-                <button v-on:click="addToCart"
-                        :disabled="!inStock"
-                        :class="{ disabledButton: !inStock}">Add to cart</button>
-                <button v-on:click="removeFromCart">Delate</button>
-            
-
-        </div>
+                </div>
                 `,
-            data(){
-                return{
-                        brand:"Vue Mastery",
-                product: 'Earphone',
-               
-                altText: 'beats solo 3 Black',
-               
-                onSale: true,
-                selectedVariant:0,
-                details: [
-                    "80% cotton", "20% polyester", "Grender-neutral"
-                ],
-                variants: [{
-                        variantId: 2234,
-                        variantColor: "black",
-                        variantImage:"./img/beats-black.jpg",
-                        variantQuantity:0
-                    },
-                    {
-                        variantId: 2235,
-                        variantColor: "red",
-                        variantImage: "./img/beats-red.jpeg",
-                        variantQuantity:10
-                        
-                    }
-                ],
-                cart: 0,
-                
+            data() {
+                return {
+                    brand: "Vue Mastery",
+                    product: 'Earphone',
+
+                    altText: 'beats solo 3 Black',
+
+                    onSale: true,
+                    selectedVariant: 0,
+                    details: [
+                        "80% cotton", "20% polyester", "Grender-neutral"
+                    ],
+                    variants: [{
+                            variantId: 2234,
+                            variantColor: "black",
+                            variantImage: "./img/beats-black.jpg",
+                            variantQuantity: 0
+                        },
+                        {
+                            variantId: 2235,
+                            variantColor: "red",
+                            variantImage: "./img/beats-red.jpeg",
+                            variantQuantity: 10
+
+                        }
+                    ],
+                    reviews: []
+
+
                 }
             },
-            methods:{
-                   addToCart(){
-                    this.cart +=1
+            methods: {
+                addToCart() {
+                    this.$emit('add-to-cart', this.variants[this.selectedVariant].variantId)
                 },
-                removeFromCart(){
-                    this.cart -=1
+                removeFromCart() {
+                    this.$emit('remove-from-cart', this.variants[this.selectedVariant].variantId)
                 },
-                updateProduct(index){
+                updateProduct(index) {
                     this.selectedVariant = index
                     console.log(index)
-                }
-                
-                
-            },
-            computed:{
-                 title(){
-                    return this.brand +' '+ this.product 
                 },
-                image(){
+                addReview(productReview) {
+                    this.reviews.push(productReview)
+                }
+
+
+            },
+            computed: {
+                title() {
+                    return this.brand + ' ' + this.product
+                },
+                image() {
                     return this.variants[this.selectedVariant].variantImage
                 },
-                inStock(){
+                inStock() {
                     return this.variants[this.selectedVariant].variantQuantity
+                },
+                shipping() {
+                    if (this.premium) {
+                        return "Free"
+                    } else {
+                        return 2.99
+                    }
                 }
             }
-            
+
+
+        })
+        Vue.component('product-review', {
+            template: `
+                <form class="review-form" @submit.prevent="onSubmit">
+                        <p>
+                            <label for="name">Name:</label>
+                            <input id="name" v-model="name" placeholder="name">
+
+                        </p>
+                        <p>
+                            <label for="review">Review:</label>
+                            <textarea id="review" v-model="review"></textarea>
+
+
+                        </p>
+
+                        <p>
+                            <label for="rating">Rating:</label>
+                            <select id="rating" v-model.number="rating"> 
+                                <option>5</option>
+                                <option>4</option>
+                                <option>3</option>
+                                <option>2</option>
+                                <option>1</option>
+                            </select>
+
+                        </p>
+                        <p>
+                            <input type="submit" value="Submit">
+
+                        </p>
+                        <p v-if="errors.length">
+                            <b>Please correct the followiing error(s):</b>
+                            <ul>
+                                <li v-for="error in errors">{{ error}}</li>
+                                    </ul>
+
+                        </p>
+
+                    </form>
+             
+                `,
+            data() {
+                return {
+                    name: null,
+                    review: null,
+                    rating: null,
+                    errors: []
+                }
+            },
+            methods: {
+                onSubmit() {
+
+                    if (this.name && this.review && this.rating) {
+                        let productReview = {
+                            name: this.name,
+                            review: this.review,
+                            rating: this.rating
+                        }
+                        this.$emit('review-submitted', productReview)
+                        this.name = null
+                        this.review = null
+                        this.rating = null
+
+                    } else {
+
+                        if (!this.name) this.errors.push("Name required.")
+                        if (!this.review) this.errors.push("Review required.")
+                        if (!this.rating) this.errors.push("Rating required.")
+
+                    }
+
+
+                }
+            }
         })
         var app = new Vue({
             el: '#app',
-       
-         
-                      
+            data: {
+                premium: true,
+                cart: [],
+            },
+            methods: {
+                updateCart(id) {
+                    this.cart.push(id)
+                },
+                removeCart(id) {
+                    for (var i = this.cart.length - 1; i >= 0; i--) {
+                        if (this.cart[i] === id) {
+                            this.cart.splice(i, 1);
+                        }
+                    }
+                }
+            }
+
+
+
         })
-
     </script>
-</body>
-
-</html>
+</body></html>
