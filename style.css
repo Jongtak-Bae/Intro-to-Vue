@@ -36,3 +36,14 @@ button{
     text-align: center;
     line-height: 40px;
 }
+.tab{
+   float: left;
+    width:200px;
+    height: 40px;
+    text-align: center;
+    line-height: 40px;
+    
+}
+.activeTab{
+    color: cadetblue;
+}
